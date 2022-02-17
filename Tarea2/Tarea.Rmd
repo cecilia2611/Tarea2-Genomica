@@ -1,0 +1,129 @@
+---
+title: "Tarea 2"
+author: "Cecilia Quetzal Salinas Mora"
+date: "16/2/2022"
+output: html_document
+---
+1. (15) Considera las siguientes cantidades discute y justifica qué tipo de distribución de probabilidad pueden tener las siguientes variables:
+```{r}
+#a. El número (talla) de calzado de adultos varones en México.
+#Aqui la distribucion de probabilidad es gaussiana ya que en promedio, supongo que las personas calzan mas o menos igual y estos se pueden distribuir de está forma, por lo general todos se encuentran en 25 o 26 
+#b. La distribución de habitantes en asentamientos humanos de México.
+#La distribución yo creo que por lo general lo más común es que sea alrededor de 4 a 5 personas por casa o, por lo que yo podria decir que es tambien una distribución gaussiana
+#c. La velocidad promedio de los automóviles en Bernardo Quintana a las 9 de la mañana en un día laborable.
+#Aqui definitivamente es una distribucion gaussiana dbido a que por el trafico, todos los carros se desplazan a la misma velocidad, aunque algunos quieran acelerar, siemplemente no puede
+#d. La velocidad promedio de los automóviles en Bernardo Quintana a las 3 de la mañana.
+#Aqui podria ser una distribución de cola larga, debido a que hay gente irresponsable y ebria, que aprovecha estas horas para manejar muy r+apido, mientras que otras manejan desmasiado lento debido a los accidentes
+```
+
+2.(5) Supongamos que tenemos dos nodos (A,B) en una red. El nodo A y B tiene el mismo degree, pero el A tiene un coeficiente de clusterización de 1 y el nodo B un coeficiente bajo.Dibuja está situación y explica cuál sería una mejor diana si quieres eliminarlos y afectar a la red.
+
+```{r}
+#Al tratar de hacerlo en la misma red, no podía debido a que el degree es el número de conexiones y el coeficiente de clusterización es que tan conectados están tus vecinos, por más que traté de realizarlo en la misma red, no pude así que lo hice en diferente red. Adjunto foto
+library(magick)#primero descargar el paquete magick si no se tiene, esto solo es para cargar mi dibujo 
+ired <- image_read("red.jpeg")
+ired1<- image_scale(ired, 500)
+ired1
+#Sí quiero afectar la red en donde el coeficiente de clusterización es , sería cualquiera de los dos nodos, puesto que hay el mismo degree y aparte sus vecinos se conectan, mientras que para el segundo caso donde la clusterización es menor, aqui tendriamos que ir contra el nodo A ya que estaría afectando a nodos o más bien su estructura
+```
+
+3.(40) Elabora un programa en R que usando funciones calcule, a partir de una matriz de adyacencia (Sólo utiliza R base para resolver este problema)
+
+
+```{r}
+#voy a crear primero una matriz, esta va a hacerse con ayuda de unos vectores que solo tendr�n 0 y 1 ya que es de adyacencia
+vec1<-c(0,0,1,0,1)
+vec2<-c(0,0,0,1,0)
+vec3<-c(1,0,0,1,1)
+vec4<-c(0,1,1,0,1)
+vec5<-c(1,0,1,1,0)
+ma<-rbind(vec1,vec2,vec3,vec4,vec5)
+#a. Si la red es dirigida o no.
+diono<-function(ma){
+  if(sum(diag(ma))==0){
+    cat("esta red es no dirigida")
+  }else{
+    cat("Esta red es dirigida")
+  }
+}
+#aqu� practicamente nos va ayudar el diag, porque nos ayuda con la extraccion de la diagonal en la matriz,a partir de esta sabremo si es dirigida o no
+#b. Si la red es pesada o no.
+#aqui lo vamos a saber si hay m�s de una conexion entre los nodos
+peono<-function(){
+  pesada<-if(ma==1){
+    print("No es pesada")
+  }else{print("Es pesada")}
+}
+#c. El degree de los nodos.
+##para nuestro numero de conexiones lo vamos a realizar con la suma de nuestros renglones,esto con ayuda de aplly de de sum 
+dn<-function(x){
+  apply(ma,2,FUN = sum())
+dn(ma)
+} #aqu� al correrlo no me daba nada:c pero eso es m�s o menos la idea 
+#d. El histograma del degree.
+hist(dn)
+```
+
+(40) A partir de la red de interaccion de proteinas alojada en la libreria igraphdata,que puedes llamar mediante data(yeast) elabora un programa en R 
+
+```{r}
+#vamos a cargar la libreria igraphdata
+library(igraphdata)
+data("yeast")
+yeast
+#Calcule la distribución de conectividades y grafique esa distribución . Discute tu resultado.
+yes<-degree(yeast)
+yes
+hist(yes,100)#aqui no está diciendo que es más probable que cada nodo tenga pocas conexiones, mientras que son pocos los que tienen demasiadas entre 100 y 120
+# Grafique el boxplot de la distribución de conectividades y discute tu resultado.
+boxplot(yes)#aqui me dice lo mismo que en la de arriba, al estar la cajita en la parte de abajo quiere decir que es más el promedio que tiene pocas conexiones, y es por eso que aparecen pocos en la parte de arriba entre 100 y 120
+#c. Encuentre la proporción de nodos que tienen 15 o más conectividades.
+ld<-length(degree(yeast))# se obtendra la longitud de los datos con degree
+mayor<-length(m_15)#solo seleccionaremos los que tienen 15 o mas conectividades
+(leng_15/leng_yeast)*100#esto es para sacar la proporcion la proporcion
+#d. Calcule el degree máximo de la red.
+max(degree(yeast))# lo cual me va a dar 118
+#e. Calcule el diámetro
+diameter(yeast)# lo cual me va a dar 15
+#f. La trayectoria más larga.
+tml<- get_diameter(yeast) 
+tml#la trayectoria m�s larga es de 2617
+#g. Elimine los 10 nodos más conectados de la red y determine el diámetro cada vez que lo haga.
+head(sort(yeti,decreasing = TRUE,10))#aqui me da los primeros 10 con más conectividad, que son YPL131W   YNL178W   YIL021W   YOL127W   YJL063C   YBR283C YLR378C   YMR260C   YBR251W 
+m1<-delete.vertices(yeast,v="YPR110C") 
+diameter(m1)
+m2<-delete.vertices(yeast,v="YPL131W") 
+diameter(m2)
+m3<-delete.vertices(yeast,v="YNL178W") 
+diameter(m3)
+m4<-delete.vertices(yeast,v="YIL021W") 
+diameter(m4)
+m5<-delete.vertices(yeast,v="YOL127W") 
+diameter(m5)
+m6<-delete.vertices(yeast,v="YJL063C") 
+diameter(m6)
+m7<-delete.vertices(yeast,v="YBR283C") 
+diameter(m7)
+m8<-delete.vertices(yeast,v="YLR378C") 
+diameter(m8)
+m9<-delete.vertices(yeast,v="YMR260C") 
+diameter(m9)
+m10<-delete.vertices(yeast,v="YBR251W") 
+diameter(m10)    
+#en todos me da un diametro de 15, sea cual sea que remueva  
+#h. Determine los diez nodos más importantes por al menos tres medidas de centralidad.
+sort(degree(yeast),decreasing = TRUE)[1:10] #Esto har� que los ordene de forma decresiente teniendo al principio los m�s importantes
+sort(betweenness(yeast),decreasing = TRUE)[1:10] #practicamente aqu� es lo mismo solo que con otro principio 
+sort(eccentricity(yeast),decreasing = TRUE)[1:10]
+#i. Clusterizar la red por al menos dos métodos y determinar el tamaño del clúster más grande.
+m1<-cluster_edge_betweenness(yeast)
+table(membership(m1))
+m2<-cluster_fluid_communities(yeast)
+table(membership(m2))
+m3<-cluster_louvain(yeast)
+table(membership(m3))
+#aqu� los tres fueron totalmente al azar, no los escog� por nada en particular
+#j. Determine si la red es de mundo pequeño, ultra pequeño u otra.
+transitivity(yeast)#aqui no estoy realmente segura 
+```
+
